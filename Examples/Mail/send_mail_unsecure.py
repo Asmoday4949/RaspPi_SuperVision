@@ -9,7 +9,7 @@ from email.mime.multipart import MIMEMultipart
 # GMAIL : Need to enable "Insecure access".
 
 class MailService:
-    def __init__(self, address, port, user, password):
+    def __init__(self, user, password, address, port):
         smtp_server = smtplib.SMTP_SSL(address, port)
         smtp_server.login(user, password)
         self.smtp_server = smtp_server
