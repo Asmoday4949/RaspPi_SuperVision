@@ -1,11 +1,16 @@
 from flask import Flask, render_template, Response
-from .CameraThread import *
+from Imagery.Camera import *
+from Imagery.MotionDetector import *
+from Mail.MailService import *
+from Mail.AutoMail import *
 import time
 
 app = Flask(__name__)
-#camera_thread = CameraThread()
+
 camera = Camera.get_instance()
 motion_detector = MotionDetector()
+mail_provider = MailService("Gerard@MonMail", "TasRellementCru?", 'smtp.gmail.com', 465)
+auto_mail = AutoMail(mail_provider, "Gerard@MonMail", "Germaine@SonMail", 10)
 
 @app.route('/')
 def index():
@@ -14,7 +19,10 @@ def index():
 def gen(camera):
     while True:
         frame = camera.get_frame()[1]
-        processed_img = motion_detector.process_and_convert_jpeg(frame)
+        detection, processed_frame = motion_detector.process(frame)
+        processed_img = motion_detector.convert_jpeg(processed_frame)
+        if detection:
+            auto_mail.process(processed_img)
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + processed_img + b'\r\n')
 
