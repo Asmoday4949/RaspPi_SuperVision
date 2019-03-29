@@ -12,6 +12,7 @@ class MotionDetector:
         self.last_frame = None
 
     def process(self, current_frame):
+        detection = False
         last_frame = self.last_frame
         # Tranformations
         current_frame = imutils.resize(current_frame, width=500)
@@ -38,14 +39,19 @@ class MotionDetector:
             	(x, y, w, h) = cv2.boundingRect(contour)
             	cv2.rectangle(current_frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
 
+            # Check detection if there's something detected
+            detection = len(contours) > 0
+
             last_frame = gray
         self.last_frame = last_frame
+        return detection, current_frame
 
-        return current_frame
+    def convert_jpeg(self, current_frame):
+        return cv2.imencode('.jpg', current_frame)[1].tobytes()
 
     def process_and_convert_jpeg(self, current_frame):
         current_frame = self.process(current_frame)
-        return cv2.imencode('.jpg', current_frame)[1].tobytes()
+        return convert_jpeg(current_frame)
 
 def execute_test():
     ''' Launch test : check if MotionDetector work as expected '''
