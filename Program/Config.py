@@ -1,16 +1,13 @@
 import json
+import os
 
 class Config:
-    def __init__(self, filename="config.json"):
+    def __init__(self, filename="config.json", data=dict()):
         self.filename = filename
-        self.data = dict()
+        self.set_data(data)
 
-    def configure(self, min_threshold, max_threshold, matrix_blur_size):
-        data = self.data
-        data['first_time'] = False
-        data['min_threshold'] = min_threshold
-        data['max_threshold'] = max_threshold
-        data['matrix_blur_size'] = matrix_blur_size
+    def set_data(self, data):
+        self.data = data
 
     def save(self):
         data_json = json.dumps(self.data)
@@ -24,12 +21,14 @@ class Config:
         file.close()
         self.data = json.loads(data_json)
 
+    def exist(self):
+        return os.path.isfile(self.filename)
+
     def get_data(self):
         return self.data
 
 if __name__ == "__main__":
     config = Config()
-    config.configure(15, 255, (3,3))
     config.save()
     config.load()
     print(config.get_data())
