@@ -1,3 +1,5 @@
+from picamera.array import PiRGBArray
+from picamera import PiCamera
 import cv2
 import time
 
@@ -14,7 +16,7 @@ class Camera():
     @staticmethod
     def get_instance():
         if Camera._instance == None:
-            Camera._instance = WebCamera()
+            Camera._instance = WebCam()
         return Camera._instance
 
     def get_frame(self, size):
@@ -27,19 +29,21 @@ class Camera():
     def stop(self):
         raise NotImplementedError("Must be implemented into child class")
 
-class PiCamera(Camera):
+class PiCam(Camera):
     ''' Specific camera for Raspberry PI'''
     def __init__(self):
         super(PiCamera, self).__init__()
+        self.video_stream = PiCamera()
+        self.frame = PiRGBArray(video_stream)
 
     def get_frame(self, size):
-        return None
+        return self.video_stream.capture(self.frame, format="bgr").array
 
     def stop(self):
         None
 
 
-class WebCamera(Camera):
+class WebCam(Camera):
     ''' Standard Webcam '''
 
     def __init__(self):
