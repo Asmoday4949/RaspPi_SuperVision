@@ -27,8 +27,8 @@ class AppThread(Thread):
             detection, processed_frame = motion_detector.process(frame)
             processed_img = motion_detector.convert_jpeg(processed_frame)
             self.processed_img = processed_img
-            #if detection:
-            #    auto_mail.process(processed_img)
+            if detection:
+                auto_mail.process(processed_img)
 
     def get_last_processed_image(self):
         return self.processed_img
