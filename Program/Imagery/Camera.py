@@ -32,12 +32,15 @@ class Camera():
 class PiCam(Camera):
     ''' Specific camera for Raspberry PI'''
     def __init__(self):
-        super(PiCamera, self).__init__()
+        super(PiCam, self).__init__()
+        self.resolution = (640, 480)
         self.video_stream = PiCamera()
-        self.frame = PiRGBArray(video_stream)
+        self.video_stream.resolution = self.resolution
+        self.frame = PiRGBArray(self.video_stream, size=self.resolution)
 
-    def get_frame(self, size):
-        return self.video_stream.capture(self.frame, format="bgr").array
+    def get_frame(self):
+       	self.video_stream.capture(self.frame, format="bgr")
+        return (True, self.frame.array)
 
     def stop(self):
         None
@@ -47,7 +50,7 @@ class WebCam(Camera):
     ''' Standard Webcam '''
 
     def __init__(self):
-        super(WebCamera, self).__init__()
+        super(WebCam, self).__init__()
         video_stream = cv2.VideoCapture(0)
         time.sleep(1)   # Warm up
         if not video_stream.isOpened():
