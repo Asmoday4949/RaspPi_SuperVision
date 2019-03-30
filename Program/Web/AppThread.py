@@ -9,11 +9,14 @@ class AppThread(Thread):
     def __init__(self):
         Thread.__init__(self)
         self.running = True
-        self.camera = Camera.get_instance()
-        self.motion_detector = MotionDetector()
-        self.mail_provider = MailService("malik.fleury@gmail.com", "Avantasia4949", 'smtp.gmail.com', 465)
-        self.auto_mail = AutoMail(self.mail_provider, "malik.fleury@gmail.com", "malik.fleury@gmail.com", 10)
         self.processed_img = None
+
+    def prepare(self, user_data, detection_data, mail_to, timeout):
+        self.camera = Camera.get_instance()
+        blur_size = (detection_data["blur"], detection_data["blur"])
+        self.motion_detector = MotionDetector(detection_data["min_threshold"], detection_data["max_threshold"], blur_size)
+        self.mail_provider = MailService(user_data["email"], user_data["password"], user_data["address"], user_data["port"])
+        self.auto_mail = AutoMail(self.mail_provider, user_data["email"], mail_to, timeout)
 
     def run(self):
         camera = self.camera

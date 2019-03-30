@@ -23,8 +23,9 @@ def gen():
 def video_feed():
     return Response(gen(), mimetype='multipart/x-mixed-replace; boundary=frame')
 
-def execute_server():
+def launch_server(user_config, detection_config):
     # Launch thread for all the security stuff
+    app.prepare(user_config.get_data(), detection_config.get_data(), "malik.fleury@gmail.com", 5)
     app.start()
     # Warm up
     time.sleep(1)
