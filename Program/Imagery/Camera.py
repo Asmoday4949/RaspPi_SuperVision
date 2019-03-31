@@ -16,7 +16,7 @@ class Camera():
     @staticmethod
     def get_instance():
         if Camera._instance == None:
-            Camera._instance = WebCam()
+            Camera._instance = PiCam()
         return Camera._instance
 
     def get_frame(self, size):
@@ -33,14 +33,17 @@ class PiCam(Camera):
     ''' Specific camera for Raspberry PI'''
     def __init__(self):
         super(PiCam, self).__init__()
-        self.resolution = (640, 480)
+        self.resolution = (640,480)
         self.video_stream = PiCamera()
         self.video_stream.resolution = self.resolution
+        self.video_stream.framerate = 30
         self.frame = PiRGBArray(self.video_stream, size=self.resolution)
+        self.rotation_matrix  = cv2.getRotationMatrix2D((self.resolution[0]/2, self.resolution[1]/2), 180.0, 1.0)
 
     def get_frame(self):
+        self.frame.truncate(0)
        	self.video_stream.capture(self.frame, format="bgr")
-        return (True, self.frame.array)
+        return (True, cv2.warpAffine(self.frame.array, self.rotation_matrix, self.resolution))
 
     def stop(self):
         None
