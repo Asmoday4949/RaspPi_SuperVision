@@ -15,7 +15,7 @@ class MotionDetector:
         detection = False
         last_frame = self.last_frame
         # Tranformations
-        current_frame = imutils.resize(current_frame, width=500)
+        #current_frame = cv2.resize(current_frame, width=500)
         gray = cv2.cvtColor(current_frame, cv2.COLOR_BGR2GRAY)
         gray = cv2.GaussianBlur(gray, self.blur_matrix_size, 0)
 
