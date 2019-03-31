@@ -4,6 +4,7 @@ from Imagery.MotionDetector import *
 from Mail.AutoMail import *
 from Mail.MailService import *
 from Web.Server import *
+import traceback
 
 class AppThread(Thread):
     def __init__(self):
@@ -24,11 +25,12 @@ class AppThread(Thread):
         auto_mail = self.auto_mail
         while(self.running):
             frame = camera.get_frame()[1]
-            detection, processed_frame = motion_detector.process(frame)
-            processed_img = motion_detector.convert_jpeg(processed_frame)
-            self.processed_img = processed_img
-            if detection:
-                auto_mail.process(processed_img)
+            if frame is not None:
+                detection, processed_frame = motion_detector.process(frame)
+                processed_img = motion_detector.convert_jpeg(processed_frame)
+                self.processed_img = processed_img
+                if detection:
+                    auto_mail.process(processed_img)
 
     def get_last_processed_image(self):
         return self.processed_img

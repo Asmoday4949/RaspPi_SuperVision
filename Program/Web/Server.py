@@ -30,5 +30,5 @@ def launch_server(user_config, detection_config):
     # Warm up
     time.sleep(1)
     # Execute webserver
-    web_server.run(host='0.0.0.0', debug=True, use_reloader=False)
+    web_server.run(host='0.0.0.0', debug=False, use_reloader=False)
     app.stop()
