@@ -10,8 +10,14 @@ from email.mime.multipart import MIMEMultipart
 
 class MailService:
     def __init__(self, user, password, address, port):
-        smtp_server = smtplib.SMTP_SSL(address, port)
-        smtp_server.login(user, password)
+        self.user = user
+        self.password = password
+        self.addres = address
+        self.port = port
+
+    def connect():
+        smtp_server = smtplib.SMTP_SSL(self.address, self.port)
+        smtp_server.login(self.user, self.password)
         self.smtp_server = smtp_server
 
     def send(self, subject, mail_from, mail_to, txt, img_data):

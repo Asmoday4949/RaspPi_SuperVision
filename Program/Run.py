@@ -14,6 +14,9 @@ MAX_THRESHOLD = 255
 
 USER_CONFIG_FILENAME = "user_config.json"
 DETECTION_CONFIG_FILENAME = "detection_config.json"
+APP_CONFIG_FILENAME = "app_config.json"
+
+COMMANDS_LIST = ["ru", "rd", "ra", "em"]
 
 def print_title():
     print(r"""
@@ -171,9 +174,18 @@ def load_detection_config(detection_config_name, reconfig=False):
         config.load()
     return config
 
+def load_app_config(app_config_name):
+    config = Config(app_config_name)
+    config["auto_mail_activation"] = False
+    config["timeout"] = 10
+    return config
+
 if __name__ == "__main__":
     print_title()
+    
     user_reconfig, detection_reconfig = parse_command()
     user_config = load_user_config(USER_CONFIG_FILENAME, user_reconfig)
     detection_config = load_detection_config(DETECTION_CONFIG_FILENAME, detection_reconfig)
-    launch_server(user_config, detection_config)
+    app_config = load_app_config(APP_CONFIG_FILENAME)
+
+    launch_server(user_config, detection_config, app_config)

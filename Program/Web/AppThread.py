@@ -12,12 +12,13 @@ class AppThread(Thread):
         self.running = True
         self.processed_img = None
 
-    def prepare(self, user_data, detection_data, mail_to, timeout):
+    def prepare(self, user_data, detection_data, app_data, mail_to):
         self.camera = Camera.get_instance()
         blur_size = (detection_data["blur"], detection_data["blur"])
         self.motion_detector = MotionDetector(detection_data["min_threshold"], detection_data["max_threshold"], blur_size)
         self.mail_provider = MailService(user_data["email"], user_data["password"], user_data["address"], user_data["port"])
-        self.auto_mail = AutoMail(self.mail_provider, user_data["email"], mail_to, timeout)
+        self.auto_mail = AutoMail(self.mail_provider, user_data["email"], mail_to, app_data["timeout"])
+        self.auto_mail_activation = app_data["auto_mail_activation"]
 
     def run(self):
         camera = self.camera
@@ -29,7 +30,8 @@ class AppThread(Thread):
                 detection, processed_frame = motion_detector.process(frame)
                 processed_img = motion_detector.convert_jpeg(processed_frame)
                 self.processed_img = processed_img
-                if detection:
+                if self.auto_mail_activation and detection:
+                    auto_mail.connect()
                     auto_mail.process(processed_img)
 
     def get_last_processed_image(self):
