@@ -176,8 +176,12 @@ def load_detection_config(detection_config_name, reconfig=False):
 
 def load_app_config(app_config_name):
     config = Config(app_config_name)
-    config["auto_mail_activation"] = False
-    config["timeout"] = 10
+    
+    data = dict()
+    data["auto_mail_activation"] = False
+    data["timeout"] = 10
+    config.set_data(data)
+
     return config
 
 if __name__ == "__main__":
