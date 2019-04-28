@@ -12,10 +12,10 @@ class MailService:
     def __init__(self, user, password, address, port):
         self.user = user
         self.password = password
-        self.addres = address
+        self.address = address
         self.port = port
 
-    def connect():
+    def connect(self):
         smtp_server = smtplib.SMTP_SSL(self.address, self.port)
         smtp_server.login(self.user, self.password)
         self.smtp_server = smtp_server

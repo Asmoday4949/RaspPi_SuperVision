@@ -31,7 +31,7 @@ class AppThread(Thread):
                 processed_img = motion_detector.convert_jpeg(processed_frame)
                 self.processed_img = processed_img
                 if self.auto_mail_activation and detection:
-                    auto_mail.connect()
+                    #auto_mail.connect()
                     auto_mail.process(processed_img)
 
     def get_last_processed_image(self):

@@ -17,7 +17,9 @@ class AutoMail():
         if self.start_time is None:
             self.start_time = time.time()
             #self.add_image(img)
+            self.mail_provider.connect()
             self.mail_provider.send("AutoMail - Detection", self.mail_from, self.mail_to, "Catched something...", img)
+            self.mail_provider.disconnect()
         elapsed_time = time.time() - self.start_time
         # Reset
         if elapsed_time > self.timeout:
