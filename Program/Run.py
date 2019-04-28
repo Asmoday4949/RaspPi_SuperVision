@@ -178,8 +178,8 @@ def load_app_config(app_config_name):
     config = Config(app_config_name)
     
     data = dict()
-    data["auto_mail_activation"] = False
-    data["timeout"] = 10
+    data["auto_mail_activation"] = True
+    data["timeout"] = 6
     config.set_data(data)
 
     return config
