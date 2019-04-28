@@ -1,4 +1,3 @@
-
 import cv2
 import imutils
 import time
@@ -9,23 +8,22 @@ class MotionDetector:
         self.min_threshold = min_threshold
         self.max_threshold = max_threshold
         self.blur_matrix_size = blur_matrix_size
-        self.avg = None
+        self.last_frame = None
 
     def process(self, current_frame):
         detection = False
+        last_frame = self.last_frame
         # Tranformations
         #current_frame = cv2.resize(current_frame, width=500)
         gray = cv2.cvtColor(current_frame, cv2.COLOR_BGR2GRAY)
         gray = cv2.GaussianBlur(gray, self.blur_matrix_size, 0)
 
-        # Get the very first image for background
-        if self.avg is None:
-            self.avg = gray
-            self.avg = gray.copy().astype("float")
+        # Get the very first image and pass the first iteration
+        if last_frame is None:
+            last_frame = gray
         else:
             # Get difference between two images and then try to determine the threshold
-            cv2.accumulateWeighted(gray, self.avg, 0.5)
-            frameDelta = cv2.absdiff(gray, cv2.convertScaleAbs(self.avg))
+            frameDelta = cv2.absdiff(last_frame, gray)
             threshold = cv2.threshold(frameDelta, self.min_threshold, self.max_threshold, cv2.THRESH_BINARY)[1]
 
         	# dilate the thresholded image to fill in holes, then find contours
@@ -35,13 +33,16 @@ class MotionDetector:
             contours = imutils.grab_contours(contours)
 
             for contour in contours:
-                if cv2.contourArea(contour) < 5000:
+			    if cv2.contourArea(contour) < 5000:
                     continue
             	# compute the bounding box for the contour, draw it on the frame,
             	# and update the text
-                (x, y, w, h) = cv2.boundingRect(contour)
-                cv2.rectangle(current_frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+            	(x, y, w, h) = cv2.boundingRect(contour)
+            	cv2.rectangle(current_frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
                 detection = True
+
+            last_frame = gray
+        self.last_frame = last_frame
         return detection, current_frame
 
     def convert_jpeg(self, current_frame):
