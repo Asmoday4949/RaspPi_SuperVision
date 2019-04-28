@@ -33,14 +33,13 @@ class MotionDetector:
             contours = imutils.grab_contours(contours)
 
             for contour in contours:
-			    if cv2.contourArea(contour) < 5000:
+                if cv2.contourArea(contour) < 5000:
                     continue
             	# compute the bounding box for the contour, draw it on the frame,
             	# and update the text
-            	(x, y, w, h) = cv2.boundingRect(contour)
-            	cv2.rectangle(current_frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
+                (x, y, w, h) = cv2.boundingRect(contour)
+                cv2.rectangle(current_frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
                 detection = True
-
             last_frame = gray
         self.last_frame = last_frame
         return detection, current_frame
